@@ -1,11 +1,9 @@
-import React from 'react';
-import axios from 'axios';
-
-import Tracks from '../tracks/Tracks';
-import SingleTrack from '../tracks/SingleTrack';
-import Slider from '../Slider';
-import Quotes from './Quotes';
-import Spinner from './Spinner'
+import React from "react";
+import axios from "axios";
+import SingleTrack from "../tracks/SingleTrack";
+import Slider from "../Slider";
+import Quotes from "./Quotes";
+import Spinner from "./Spinner";
 
 class Index extends React.Component {
   constructor() {
@@ -17,11 +15,11 @@ class Index extends React.Component {
 
   async componentDidMount() {
     try {
-      let { data } = await axios.get('/api/podcast');
-      console.log(data, ' is DATA');
+      let { data } = await axios.get("/api/podcast");
+      console.log(data, " is DATA");
       this.setState({ podcast_list: data });
     } catch (err) {
-      console.log(err, ' is err');
+      console.log(err, " is err");
     }
   }
 
@@ -29,31 +27,34 @@ class Index extends React.Component {
     return async () => {
       const { data } = await axios.get(`/api/podcast/${podcastId}`);
       this.setState({
-        selectedPodcast: data
+        selectedPodcast: data,
       });
     };
   }
   deselectPodcast() {
     this.setState({
-      selectedPodcast: {}
+      selectedPodcast: {},
     });
   }
 
   render() {
     return (
       <React.Fragment>
-       <Slider/>
-       <div>
-       <div className='container'>
-       {this.state.podcast_list.length ? (
-         <React.Fragment>
-       <h3>Newest Episode</h3>
-       <SingleTrack podcast={this.state.podcast_list[0]}></SingleTrack></React.Fragment>) : <Spinner/>
-       }
-       </div>
+        <Slider />
+        <div>
+          <div className='container'>
+            {this.state.podcast_list.length ? (
+              <React.Fragment>
+                <h3>Newest Episode</h3>
+                <SingleTrack podcast={this.state.podcast_list[0]}></SingleTrack>
+              </React.Fragment>
+            ) : (
+              <Spinner />
+            )}
+          </div>
 
-<Quotes/>
-       </div>
+          <Quotes />
+        </div>
       </React.Fragment>
     );
   }

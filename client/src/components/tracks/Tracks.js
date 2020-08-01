@@ -1,6 +1,6 @@
-import React, { Component } from 'react';
-import Spinner from '../layout/Spinner';
-import SingleTrack from './SingleTrack';
+import React from "react";
+import Spinner from "../layout/Spinner";
+import SingleTrack from "./SingleTrack";
 
 const Tracks = props => {
   const { podcast_list } = props;

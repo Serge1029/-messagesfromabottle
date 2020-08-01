@@ -1,9 +1,8 @@
-import React from 'react';
-import axios from 'axios';
+import React from "react";
+import axios from "axios";
 
-import Tracks from '../tracks/Tracks';
-import SingleTrack from '../tracks/SingleTrack';
-import Quotes from './Quotes';
+import Tracks from "../tracks/Tracks";
+import SingleTrack from "../tracks/SingleTrack";
 
 class Podcasts extends React.Component {
   constructor() {
@@ -15,11 +14,11 @@ class Podcasts extends React.Component {
 
   async componentDidMount() {
     try {
-      let { data } = await axios.get('/api/podcast');
-      console.log(data, ' is DATA');
+      let { data } = await axios.get("/api/podcast");
+      console.log(data, " is DATA");
       this.setState({ podcast_list: data });
     } catch (err) {
-      console.log(err, ' is err');
+      console.log(err, " is err");
     }
   }
 
@@ -27,13 +26,13 @@ class Podcasts extends React.Component {
     return async () => {
       const { data } = await axios.get(`/api/podcast/${podcastId}`);
       this.setState({
-        selectedPodcast: data
+        selectedPodcast: data,
       });
     };
   }
   deselectPodcast() {
     this.setState({
-      selectedPodcast: {}
+      selectedPodcast: {},
     });
   }
 

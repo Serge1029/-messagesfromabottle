@@ -1,13 +1,14 @@
-const router = require('express').Router();
+const nodemailer = require("nodemailer");
+const router = require("express").Router();
 
 // connect your API routes here!
-const Podcast = require('../db/podcast');
-const Message = require('../db/messages');
+const Podcast = require("../db/podcast");
+const Message = require("../db/messages");
 
 // All Podcast route
-router.get('/podcast', async (req, res, next) => {
+router.get("/podcast", async (req, res, next) => {
   try {
-    console.log('made it to podcast route');
+    console.log("made it to podcast route");
     const allPodcasts = await Podcast.findAll();
     res.send(allPodcasts);
   } catch (err) {
@@ -16,7 +17,7 @@ router.get('/podcast', async (req, res, next) => {
 });
 
 // Get Single Podcast
-router.get('/podcast/:podcastId', async (req, res, next) => {
+router.get("/podcast/:podcastId", async (req, res, next) => {
   try {
     const singlePodcast = await Podcast.findByPk(req.params.podcastId);
     res.send(singlePodcast);
@@ -26,19 +27,19 @@ router.get('/podcast/:podcastId', async (req, res, next) => {
 });
 
 // Gets all messages
-router.get('/message', async (req, res, next) => {
+router.get("/message", async (req, res, next) => {
   try {
-    console.log('made it to message route in try block');
+    console.log("made it to message route in try block");
     const allMessages = await Message.findAll();
     res.send(allMessages);
   } catch (err) {
-    console.log('made it to message route in err');
+    console.log("made it to message route in err");
     next(err);
   }
 });
 
 // Get Single Message
-router.get('/message/:messageId', async (req, res, next) => {
+router.get("/message/:messageId", async (req, res, next) => {
   try {
     const singleMessage = await Message.findById(req.params.messageId);
     res.send(singleMessage);
@@ -48,7 +49,7 @@ router.get('/message/:messageId', async (req, res, next) => {
 });
 
 // Add Single Message
-router.post('/messageAdd', async (req, res, next) => {
+router.post("/messageAdd", async (req, res, next) => {
   try {
     const data = req.body.data;
     let { name, title, comment, pic } = data;
@@ -56,18 +57,18 @@ router.post('/messageAdd', async (req, res, next) => {
       name,
       title,
       comment,
-      pic
+      pic,
     });
-    console.log('message created');
-    res.redirect('/message');
+    console.log("message created");
+    res.redirect("/message");
   } catch (err) {
     console.error(err);
   }
 });
 
-router.post('/podcastAdmin', async (req, res, next) => {
+router.post("/podcastAdmin", async (req, res, next) => {
   try {
-    console.log('Made it to the podcastAdmin route');
+    console.log("Made it to the podcastAdmin route");
     const data = req.body.data;
 
     let { name, artworkUrl, audioUrl } = data;
@@ -75,12 +76,53 @@ router.post('/podcastAdmin', async (req, res, next) => {
     await Podcast.create({
       name,
       audioUrl,
-      artworkUrl
+      artworkUrl,
     });
-    res.send('Add podcast here');
+    res.send("Add podcast here");
   } catch (err) {
     console.error(err);
   }
+});
+
+router.post("/contact", (req, res) => {
+  const output = `
+      <h2>You have a new contact message from Message From A Bottle</h2>
+      <h3>Contact Details</h3>
+      <ul>
+        <li>Name: ${req.body.name}</li>
+        <li>Email: ${req.body.email}</li>
+      </ul>
+      <h3>Message</h3>
+      <p>${req.body.message}</p>
+    `;
+
+  // Step 1
+  let transporter = nodemailer.createTransport({
+    service: "gmail",
+    auth: {
+      user: "tryking2020@gmail.com",
+      pass: "jmk9i0AAA!",
+    },
+  });
+
+  // Step 2
+  let mailOptions = {
+    from: req.body.email,
+    to: "tryking2020@gmail.com",
+    subject: "Contact Message",
+    text: req.body.message,
+    html: output,
+  };
+
+  // Step 3
+  transporter.sendMail(mailOptions, (err, data) => {
+    if (err) {
+      res.status(500).end();
+      res.json(err);
+    } else {
+      res.json(data);
+    }
+  });
 });
 
 module.exports = router;
